@@ -11,4 +11,5 @@ $Credential = New-Object -TypeName System.Management.Automation.PSCredential -Ar
 Connect-AzAccount -Tenant $Tenant -Subscription $Subscription -Credential $Credential -ServicePrincipal
 
 # Get the pricesheet for a specific date (e.g. 202106-1)
+# https://docs.microsoft.com/en-us/powershell/module/az.billing/get-azconsumptionpricesheet
 Get-AzConsumptionPriceSheet -BillingPeriodName $BillingPeriodName
