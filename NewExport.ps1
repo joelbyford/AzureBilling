@@ -18,7 +18,6 @@ Connect-AzAccount -Tenant $Tenant -Subscription $Subscription -Credential $Crede
 
 # Create a new export
 # https://docs.microsoft.com/en-us/powershell/module/az.costmanagement/new-azcostmanagementexport?view=azps-6.4.0
-
 New-AzCostManagementExport -Scope "subscriptions/$($Subscription)" `
 -Name $ExportName `
 -DefinitionTimeframe "Custom" `
@@ -27,7 +26,7 @@ New-AzCostManagementExport -Scope "subscriptions/$($Subscription)" `
 -Format "Csv" `
 -DestinationResourceId "/subscriptions/$($Subscription)/resourceGroups/$($ResourceGroupName)/providers/Microsoft.Storage/storageAccounts/$($StorageAccountName)" `
 -DestinationContainer $ContainerName `
--DestinationRootFolderPath "ad-hoc" `
+-DestinationRootFolderPath $Subscription `
 -DefinitionType "Usage" `
 -DatasetGranularity "Daily"
 

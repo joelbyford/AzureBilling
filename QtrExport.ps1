@@ -30,7 +30,7 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
             $name = $ExportName + "-" + $currentYear + "-" + $q
             
             # Call the new export script and start it immediately
-            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -SvcPrincipalName $SvcPrincipalName -SvcPrincipalPass $SvcPrincipalPass -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $subscriptions[$i] -StartImmediately $True
+            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -SvcPrincipalName $SvcPrincipalName -SvcPrincipalPass $SvcPrincipalPass -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -StartImmediately $True
             
             # Send something out to the console to see whats going on
             $statusText = "Created Export for " + $subscriptions[$i] + " " + $startDate + " " + $endDate
