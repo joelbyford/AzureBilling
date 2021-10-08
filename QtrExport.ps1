@@ -1,16 +1,37 @@
-param([string]$Tenant, [string]$SvcPrincipalName, [string]$SvcPrincipalPass, [int]$StartYear, [int]$NumYears, [string]$ExportName, [string]$StorageAccountName, [string]$ResourceGroupName, [string]$ContainerName, [string]$SubsFile)
+param([string]$Tenant, [string]$SvcPrincipalName, [string]$SvcPrincipalPass, [int]$StartYear, [int]$NumYears, [string]$ExportName, [string]$StorageAccountName, [string]$ResourceGroupName, [string]$ContainerName, [string]$SubsFile, [string]$Region)
 
 $subscriptions = Get-Content $SubsFile -Delimiter ","
 $startDates = @("-01-01T00:00:00Z", "-04-01T00:00:00Z", "-07-01T00:00:00Z", "-10-01T00:00:00Z")
 $endDates = @("-03-31T23:59:59Z", "-06-30T23:59:59Z", "-09-30T23:59:59Z", "-12-31T23:59:59Z")
 
-#$StartYear = 2018
-#$NumYears = 3
-
 # Loop through the subscriptoins
 For ($i=0; $i -lt $subscriptions.Length; $i++)
 {
     Write-Output $subscriptions[$i]
+    # --------------------------------------------------------------------
+    # ------ START - REMOVE THIS IF NOT USING A SERVICE Principal --------
+    # --------------------------------------------------------------------
+
+    # Convert the service Principal password to a Secure String
+    # and create a Credential object with the Service Princple information for use in connecting to Azure
+    # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-credential
+    $Password = ConvertTo-SecureString -String $SvcPrincipalPass -AsPlainText -Force
+    $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $SvcPrincipalName, $Password
+
+    # Connect to Azure
+    # https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount
+    Connect-AzAccount -Tenant $Tenant -Subscription $Subscriptions[$i] -Credential $Credential -ServicePrincipal
+    
+    # --------------------------------------------------------------------
+    # ------ END - REMOVE THIS IF NOT USING A SERVICE Principal ----------
+    # --------------------------------------------------------------------
+
+    # Create a new storage account to store the exports in
+    # https://docs.microsoft.com/en-us/powershell/module/az.storage/New-azStorageAccount
+    # IMPORTANT - CHANGE THE SKU BASED ON YOUR NEEDS
+    New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $Region -SkuName Standard_GRS
+
+    Write-Output "New Storage Account Created"
 
     For ($year=0; $year -lt $NumYears; $year++)
     {
@@ -30,7 +51,7 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
             $name = $ExportName + "-" + $currentYear + "-" + $q
             
             # Call the new export script and start it immediately
-            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -SvcPrincipalName $SvcPrincipalName -SvcPrincipalPass $SvcPrincipalPass -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -StartImmediately $True
+            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -Region $Region -StartImmediately $True
             
             # Send something out to the console to see whats going on
             $statusText = "Created Export for " + $subscriptions[$i] + " " + $startDate + " " + $endDate

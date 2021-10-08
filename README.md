@@ -27,13 +27,13 @@ Simply make a call to the `QtrExport.ps1` file with the following parameters:
 - `StartYear` - The first year for the export.
 - `NumYears` - The number of years to generate an export for (e.g. 2 years with the start date as 2018 would yield 2018 & 2019 exports).
 - `ExportName` - The prefix for the exported files that will be combined with the year and quarter number (e.g. `MyExports` will result in exports named `MyExport-2018-1` for the first quarter of 2018).
-- `StorageAccountName` - The EXISTING storage account where the export will be stored.  
+- `StorageAccountName` - The NEW storage account where the export will be stored.  
 - `ResourceGroupName` - The EXISTING resource group where the storage account resides.
-- `ContainerName` - The EXISTING Blob container in which the exports will be placed.
+- `ContainerName` - The NEW or EXISTING Blob container in which the exports will be placed.
 
 ### Example Call
 ```
-./QtrExport.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StartYear 2018 -NumYears 2 -ExportName "QtrlyExport" -StorageAccountName "byfordexports" -ResourceGroupName "rgDoNotDeleteDemos" -ContainerName "exports"
+./QtrExport.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StartYear 2018 -NumYears 2 -ExportName "QtrlyExport" -StorageAccountName "byfordexports" -ResourceGroupName "rgDoNotDeleteDemos" -ContainerName "exports" -Region westus
 ```
 
 ### IMPORTANT - Quarterly Report CLEANUP
