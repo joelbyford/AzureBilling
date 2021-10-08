@@ -2,7 +2,7 @@ param([string]$Tenant, [string]$SvcPrincipalName, [string]$SvcPrincipalPass, [in
 
 $subscriptions = Get-Content $SubsFile -Delimiter ","
 $startDates = @("-01-01T00:00:00Z", "-04-01T00:00:00Z", "-07-01T00:00:00Z", "-10-01T00:00:00Z")
-$endDates = @("-03-31T00:00:00Z", "-06-30T00:00:00Z", "-09-30T00:00:00Z", "-12-31T00:00:00Z")
+$endDates = @("-03-31T23:59:59Z", "-06-30T23:59:59Z", "-09-30T23:59:59Z", "-12-31T23:59:59Z")
 
 #$StartYear = 2018
 #$NumYears = 3
@@ -30,7 +30,7 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
             $name = $ExportName + "-" + $currentYear + "-" + $q
             
             # Call the new export script and start it immediately
-            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -SvcPrincipalName $SvcPrincipalName -SvcPrincipalPass $SvcPrincipalPass -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -StartImmediately $True
+            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -SvcPrincipalName $SvcPrincipalName -SvcPrincipalPass $SvcPrincipalPass -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $subscriptions[$i] -StartImmediately $True
             
             # Send something out to the console to see whats going on
             $statusText = "Created Export for " + $subscriptions[$i] + " " + $startDate + " " + $endDate
