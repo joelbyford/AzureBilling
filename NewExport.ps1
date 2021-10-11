@@ -1,4 +1,11 @@
 param([string]$Tenant, [string]$Subscription, [datetime]$StartDate, [datetime]$EndDate, [string]$ExportName, [string]$StorageAccountName, [string]$ResourceGroupName, [string]$ContainerName, [string] $Region, [Boolean]$StartImmediately)
+# *************************************************
+# Create and [optionally] fire off an export in a 
+# single subscription.
+# *************************************************
+# * PLEASE SEE QtrExport.ps1 for the main loop.   *
+# *************************************************
+
 # ***************************IMPORTANT*****************************************
 # Service Principal needs to have `Contributor` role.
 # Must Install the Az.CostManagement module (Install-Module Az.CostManagement).

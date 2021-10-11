@@ -1,5 +1,11 @@
 # AzureBilling
-An **UNOFFICIAL** repo with scripts to help simplify gathering Azure billing data.    
+An **UNOFFICIAL** repo with scripts to help simplify gathering Historical Azure billing data.  This includes two major pieces:
+
+## Part 1 - Generates All Exports
+The `QtrExport.ps1` file takes and dynamically creates new quarterly exports for each subscription in a comma separated subscriptions file.  
+
+## Part 2 - Download All Exports
+Additionally, the `DownloadAll.ps1` file allows for looping through all the exports created  
 
 ## Pre-Requisites
 - **PowerShell AZ Module** - Must have the PowerShell AZ module installed.  Please see the [Microsoft Docs](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps) on how to install this.  
@@ -31,9 +37,25 @@ Simply make a call to the `QtrExport.ps1` file with the following parameters:
 - `ResourceGroupName` - The EXISTING resource group where the storage account resides.
 - `ContainerName` - The NEW or EXISTING Blob container in which the exports will be placed.
 
-### Example Call
+### Example Quarterly Export Call
 ```
-./QtrExport.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StartYear 2018 -NumYears 2 -ExportName "QtrlyExport" -StorageAccountName "byfordexports" -ResourceGroupName "rgDoNotDeleteDemos" -ContainerName "exports" -Region westus
+./QtrExport.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StartYear 2018 -NumYears 2 -ExportName "QtrlyExport" -StorageAccountName "exports" -ResourceGroupName "rgExports" -ContainerName "exports" -Region westus
+```
+
+## Usage for Downloading All Reports from All Subscriptions (call after the above)
+Simply call the `DownloadAll.ps1` file with the following parameters:
+- `Tenant` - The Tenant where the service principal exists
+- `SvcPrincipalName` - The ClientID of the service principal
+- `SvcPrincipalPass` - The Secret generated for the Service Principal
+- `StorageAccountName` - The name of the Storage Account created in each subscription when the QtrExport.ps1 was first called.
+- `ResourceGroupName` - The Resource Group where the Storage Account is located in each subscription when the QtrExport.ps1 was first called.
+- `ContainerName` - The Blob container where the exports were sent when the QtrExport.ps1 was previously called.
+- `SubsFile` - The comma separated file where all subscriptions are listed.
+- `DestinationPath` - The destination on your local computer where the .csv files will be downloaded.
+
+### Example Download All Reports Call
+```
+./DowloadAll.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StorageAccountName "exports" -ResourceGroupName "rgExports" -ContainerName "exports" -DestinationPath "c:/temp"
 ```
 
 ### IMPORTANT - Quarterly Report CLEANUP

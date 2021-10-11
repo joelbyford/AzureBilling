@@ -1,4 +1,7 @@
 param([string]$Tenant, [string]$Subscription, [string]$SvcPrincipalName, [string]$SvcPrincipalPass, [string]$ExportName)
+# This is simply an extra utility script.
+# It allows for triggering a specific export to start via REST.
+
 # ***************************IMPORTANT******************************
 # Service Principal needs to have `CostManagementContributor` role
 # ******************************************************************
