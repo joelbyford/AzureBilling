@@ -44,7 +44,8 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
     # **********************************************
     # IMPORTANT - CHANGE THE SKU BASED ON YOUR NEEDS
     # **********************************************
-    New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $Region -SkuName Standard_GRS
+    $UniqueSaName = $StorageAccountName + $subscriptions[$i].Substring(0,4)
+    New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $UniqueSaName -Location $Region -SkuName Standard_GRS
 
     Write-Output "New Storage Account Created"
 
@@ -66,7 +67,7 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
             $name = $ExportName + "-" + $currentYear + "-" + $q
             
             # Call the new export script and start it immediately
-            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $StorageAccountName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -Region $Region -StartImmediately $True
+            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $UniqueSaName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -Region $Region -StartImmediately $True
             
             # Send something out to the console to see whats going on
             $statusText = "Created Export for " + $subscriptions[$i] + " " + $startDate + " " + $endDate
