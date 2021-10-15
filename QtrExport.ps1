@@ -38,14 +38,19 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
     # ------ END - REMOVE THIS IF NOT USING A SERVICE Principal ----------
     # --------------------------------------------------------------------
 
+    # Create a new Resource Group for the Storage Account
+    # https://docs.microsoft.com/en-us/powershell/module/az.resources/new-azresourcegroup
+    $UniqueRgName = $ResourceGroupName + $subscriptions[$i].Substring(0,4)
+    New-AzResourceGroup -Name $UniqueRgName -Location $Region
+
     # Create a new storage account to store the exports in
     # https://docs.microsoft.com/en-us/powershell/module/az.storage/New-azStorageAccount
     
     # **********************************************
     # IMPORTANT - CHANGE THE SKU BASED ON YOUR NEEDS
     # **********************************************
-    $UniqueSaName = $StorageAccountName + $subscriptions[$i].Substring(0,4)
-    New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $UniqueSaName -Location $Region -SkuName Standard_GRS
+    $UniqueSaName = ($StorageAccountName + $subscriptions[$i].Substring(0,4)).ToLower()
+    New-AzStorageAccount -ResourceGroupName $UniqueRgName -Name $UniqueSaName -Location $Region -SkuName Standard_GRS
 
     Write-Output "New Storage Account Created"
 
@@ -67,7 +72,7 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
             $name = $ExportName + "-" + $currentYear + "-" + $q
             
             # Call the new export script and start it immediately
-            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $UniqueSaName -ResourceGroupName $ResourceGroupName -ContainerName $ContainerName -Region $Region -StartImmediately $True
+            & ./NewExport.ps1 -Tenant $Tenant -Subscription $subscriptions[$i] -StartDate $startDate -EndDate $endDate -ExportName $name -StorageAccountName $UniqueSaName -ResourceGroupName $UniqueRgName -ContainerName $ContainerName -Region $Region -StartImmediately $True
             
             # Send something out to the console to see whats going on
             $statusText = "Created Export for " + $subscriptions[$i] + " " + $startDate + " " + $endDate

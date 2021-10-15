@@ -25,8 +25,9 @@ Connect-AzAccount -Tenant $Tenant -Subscription $Subscription -Credential $Crede
 
 # Get the storage account keys from the given storage account (authenticated by the context of the logged in user)
 # https://docs.microsoft.com/en-us/powershell/module/az.storage/get-azstorageaccountkey
-$UniqueSaName = $StorageAccountName + $subscriptions[$i].Substring(0,4)
-$SaKeys = (Get-AzStorageAccountKey -ResourceGroupName $ResourceGroupName -AccountName $UniqueSaName).Value
+$UniqueSaName = ($StorageAccountName + $subscriptions[$i].Substring(0,4)).ToLower()
+$UniqueRgName = $ResourceGroupName + $subscriptions[$i].Substring(0,4)
+$SaKeys = (Get-AzStorageAccountKey -ResourceGroupName $UniqueRgName -AccountName $UniqueSaName).Value
 
 # Get the context to the right Storage Account
 # https://docs.microsoft.com/en-us/powershell/module/az.storage/new-azstoragecontext
