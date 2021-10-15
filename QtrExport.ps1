@@ -46,14 +46,27 @@ For ($i=0; $i -lt $subscriptions.Length; $i++)
     # Create a new storage account to store the exports in
     # https://docs.microsoft.com/en-us/powershell/module/az.storage/New-azStorageAccount
     
-    # **********************************************
+    # *************************************************
     # IMPORTANT - CHANGE THE SKU BASED ON YOUR NEEDS
-    # **********************************************
+    # *************************************************
     $UniqueSaName = ($StorageAccountName + $subscriptions[$i].Substring(0,4)).ToLower()
     New-AzStorageAccount -ResourceGroupName $UniqueRgName -Name $UniqueSaName -Location $Region -SkuName Standard_GRS
 
     Write-Output "New Storage Account Created"
 
+    # Register Cost Management in the Subscription
+    # Needs to be done once per sub
+    Register-AzResourceProvider -ProviderNamespace Microsoft.CostManagementExports
+
+    # Wait for it to be completed as this is an async call and may be processing for some time
+    while ((Get-AzResourceProvider -ProviderNamespace Microsoft.CostManagementExports).RegistrationState -ne 'Registered')
+    {
+        Write-Output "Waiting for Resource Provider Registration"
+        Write-Output "Checking again in 10 seconds.."
+
+        Start-Sleep -s 10
+    } 
+    
     For ($year=0; $year -lt $NumYears; $year++)
     {
         $currentYear = $StartYear + $year
