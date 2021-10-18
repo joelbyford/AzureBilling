@@ -7,6 +7,11 @@ The `QtrExport.ps1` file takes and dynamically creates new quarterly exports for
 ## Part 2 - Download All Exports
 Additionally, the `DownloadAll.ps1` file allows for looping through all the exports created  
 
+## Optional - Validate All Exports
+A script to simply validate that at least one export for each subscription has been created and run is provided  in the `ValidateExports.ps1` file. 
+
+---------
+
 ## Pre-Requisites
 - **PowerShell AZ Module** - Must have the PowerShell AZ module installed.  Please see the [Microsoft Docs](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps) on how to install this.  
 - **Install the Az.CostManagement Module** Install this by calling simply calling `Install-Module Az.CostManagement` from the PowerShell prompt.
@@ -23,8 +28,8 @@ Alternatively, you may modify the scripts to instead use current logged in conte
 and
 # ------ END - REMOVE THIS IF NOT USING A SERVICE Principal ----------
 ```
-
-## Usage for Quarterly Report
+----------
+## Step 1 - Usage for Quarterly Report
 Simply make a call to the `QtrExport.ps1` file with the following parameters:
 - `Tenant` - The Azure Tenant ID
 - `SubsFile` - A Comma delimited list of subscriptions (see `subs.data` as an example).
@@ -41,8 +46,9 @@ Simply make a call to the `QtrExport.ps1` file with the following parameters:
 ```
 ./QtrExport.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StartYear 2018 -NumYears 2 -ExportName "QtrlyExport" -StorageAccountName "exports" -ResourceGroupName "rgExports" -ContainerName "exports" -Region westus
 ```
+----------
 
-## Usage for Downloading All Reports from All Subscriptions (call after the above)
+## Step 2 - Usage for Downloading All Reports from All Subscriptions (call after the above)
 Simply call the `DownloadAll.ps1` file with the following parameters:
 - `Tenant` - The Tenant where the service principal exists
 - `SvcPrincipalName` - The ClientID of the service principal
@@ -57,6 +63,21 @@ Simply call the `DownloadAll.ps1` file with the following parameters:
 ```
 ./DowloadAll.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -StorageAccountName "exports" -ResourceGroupName "rgExports" -ContainerName "exports" -DestinationPath "c:/temp"
 ```
+-------
 
-### IMPORTANT - Quarterly Report CLEANUP
+## Optional - Validating Reports Run from Subscription List (call after the QtrExport.ps1)
+Simply call the `ValidateExports.ps1` file with the following parameters:
+- `Tenant` - The Tenant where the service principal exists
+- `SvcPrincipalName` - The ClientID of the service principal
+- `SvcPrincipalPass` - The Secret generated for the Service Principal
+- `SubsFile` - The comma separated file where all subscriptions are listed.
+- `ExportName` - The prefix for the exported files that was be combined with the year and quarter number (e.g. `MyExports` called in the QtrExport.ps1 file resulted in exports named `MyExport-2018-1` for the first quarter of 2018).
+
+### Example Download All Reports Call
+```
+./ValidateExports.ps1 -Tenant xxxx-xxx-xxxxxxxx -SubsFile subs.data -SvcPrincipalName yyy-yyyyy-yyyy -SvcPrincipalPass SomeSecretStringGoesHere -ExportName QtrRpt
+```
+-----------
+
+# IMPORTANT - Quarterly Report CLEANUP
 Please remember to **REMOVE CONTRIBUTOR ROLE** from the service Principal created for this export after the script has been successfully run.
