@@ -13,11 +13,13 @@ A script to simply validate that at least one export for each subscription has b
 ---------
 
 ## Pre-Requisites
+### **Option 1** - Use GitHub Codespace which is pre-configured with all of the powershell modules and prerequisites.
+### **Option 2** - Configure on your own machine.
 - **PowerShell AZ Module** - Must have the PowerShell AZ module installed.  Please see the [Microsoft Docs](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps) on how to install this.  
 - **Install the Az.CostManagement Module** Install this by calling simply calling `Install-Module Az.CostManagement` from the PowerShell prompt.
 
 ### Using Service Principal
-If using a service Principal, the following are required as well:
+The repo is built assuming the usage of a Service Principal.  If using that service Principal, the following are required as well:
 - **Service Principal** - Create a service Principal with contributor role in any subscription where the export is being created.  See the following to learn how to create Service Principals: https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal
 - **Contributor Role** - Creating exports currently requires subscription-level contributor rights.  
 

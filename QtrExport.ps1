@@ -12,6 +12,24 @@ param([string]$Tenant, [string]$SvcPrincipalName, [string]$SvcPrincipalPass, [in
 # SubsFile           - The comma separated file where all subscriptions are listed.
 # IMPORTANT - CHANGE THE SKU LATER IN THIS FILE BASED ON YOUR NEEDS
 
+# Change as needed
+$ErrorActionPreference = 'Stop'
+#$ErrorActionPreference = 'SilentlyContinue'
+
+# ============================================
+# Prereq Check - Az.CostManagement module
+# ============================================
+try {
+    Import-Module Az.CostManagement
+} 
+catch {
+    Write-Host  "Script requires the Az.CostManagement module, please install with:" -ForegroundColor Red
+    Write-Host "`Install-Module Az.CostManagement` " -ForegroundColor Red
+    Write-Host "in an escalated (Administrator) PowerShell session." -ForegroundColor Red
+    Break
+}
+
+
 $subscriptions = Get-Content $SubsFile -Delimiter ","
 $startDates = @("-01-01T00:00:00Z", "-04-01T00:00:00Z", "-07-01T00:00:00Z", "-10-01T00:00:00Z")
 $endDates = @("-03-31T23:59:59Z", "-06-30T23:59:59Z", "-09-30T23:59:59Z", "-12-31T23:59:59Z")
